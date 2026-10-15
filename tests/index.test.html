@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QA Training App - Tests</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    .pass { color: #15803d; }
+    .fail { color: #b91c1c; }
+    iframe { width: 800px; height: 500px; border: 1px solid #ccc; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>QA Training App - Tests</h1>
+  <p>Dependency-free tests. Open this file in a browser (served over http, or Chrome with
+    <code>--allow-file-access-from-files</code>) to run them against <code>../index.html</code>.</p>
+  <ul id="results"></ul>
+  <p id="summary"></p>
+  <iframe id="app" title="App under test"></iframe>
+
+  <script>
+    const tests = [];
+    function test(name, fn) { tests.push({ name, fn }); }
+
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+    }
+
+    // Load a fresh copy of the app for every test so state does not leak between tests.
+    function loadApp() {
+      return new Promise(function(resolve) {
+        const frame = document.getElementById("app");
+        frame.onload = function() { resolve(frame.contentDocument); };
+        frame.src = "../index.html?t=" + Date.now();
+      });
+    }
+
+    // Let event handlers and DOM updates settle before asserting.
+    function settle() {
+      return new Promise(function(resolve) { setTimeout(resolve, 300); });
+    }
+
+    test("TC-LOGIN-001: Login with empty fields shows a validation message", async function() {
+      const doc = await loadApp();
+      doc.querySelector("#loginForm button[type=submit]").click();
+      await settle();
+      const text = doc.getElementById("message").textContent.trim();
+      assert(text === "Please enter email and password.",
+        'Expected "Please enter email and password." but got "' + text + '"');
+    });
+
+    test("TC-LOGIN-002: Login with entered credentials shows the demo message", async function() {
+      const doc = await loadApp();
+      doc.getElementById("email").value = "qa@example.com";
+      doc.getElementById("password").value = "Test123";
+      doc.querySelector("#loginForm button[type=submit]").click();
+      await settle();
+      const text = doc.getElementById("message").textContent.trim();
+      assert(text === "Demo only: login is not connected to a server.",
+        'Expected the demo message but got "' + text + '"');
+    });
+
+    // Bug as a failing test: this test is expected to FAIL until the Submit bug is fixed.
+    // The exact success text is pending requirements, so the assertion only requires
+    // that some visible feedback appears after a valid submit.
+    test("TC-SUBMIT-001: Submit with a full name gives visible feedback", async function() {
+      const doc = await loadApp();
+      doc.getElementById("fullName").value = "Xuan";
+      doc.getElementById("submitButton").click();
+      await settle();
+      const text = doc.getElementById("message").textContent.trim();
+      assert(text !== "",
+        "Expected feedback in #message after clicking Submit, but #message is empty");
+    });
+
+    async function run() {
+      const list = document.getElementById("results");
+      let passed = 0;
+
+      for (const t of tests) {
+        const item = document.createElement("li");
+        try {
+          await t.fn();
+          passed++;
+          item.className = "pass";
+          item.textContent = "PASS " + t.name;
+        } catch (error) {
+          item.className = "fail";
+          item.textContent = "FAIL " + t.name + " -- " + error.message;
+        }
+        list.appendChild(item);
+      }
+
+      document.getElementById("summary").textContent =
+        "RESULT: " + passed + "/" + tests.length + " passed";
+    }
+
+    run();
+  </script>
+</body>
+</html>
