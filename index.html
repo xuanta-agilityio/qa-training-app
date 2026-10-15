@@ -5,55 +5,302 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QA Training App</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-      line-height: 1.6;
+    :root {
+      --bg: #fde4ec;
+      --bg-accent: #f9d0e0;
+      --card: #ffffff;
+      --text: #1c2333;
+      --muted: #5f6b85;
+      --border: #dde2ee;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-soft: rgba(79, 70, 229, 0.15);
+      --secondary: #eef0f7;
+      --secondary-hover: #e2e6f2;
+      --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
     }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #2a1820;
+        --bg-accent: #3a2030;
+        --card: #1f1a26;
+        --text: #e6e9f2;
+        --muted: #98a2bb;
+        --border: #2a3147;
+        --primary: #6d66f0;
+        --primary-hover: #847ef5;
+        --primary-soft: rgba(109, 102, 240, 0.25);
+        --secondary: #232a3e;
+        --secondary-hover: #2c344c;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 15% 10%, var(--bg-accent) 0, transparent 40%),
+        radial-gradient(circle at 85% 90%, var(--bg-accent) 0, transparent 45%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 48px 16px;
+    }
+
+    header {
+      margin-bottom: 32px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--primary-soft);
+      border-radius: 999px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      padding: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .card-desc {
+      margin: 0 0 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
     input {
       display: block;
       width: 100%;
-      padding: 10px;
-      margin: 8px 0 16px;
-      box-sizing: border-box;
+      padding: 10px 12px;
+      margin: 0 0 16px;
+      font: inherit;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
+
+    input::placeholder {
+      color: var(--muted);
+      opacity: 0.8;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
     button {
-      padding: 10px 18px;
-      margin-right: 8px;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding: 11px 18px;
+      margin-top: 4px;
+      font: inherit;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s ease, box-shadow 0.2s ease;
     }
+
+    /* Shine sweep on hover */
+    button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      transform: skewX(-20deg);
+      pointer-events: none;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px var(--primary-soft);
+    }
+
+    button:hover::after {
+      animation: shine 0.75s ease;
+    }
+
+    button:active {
+      transform: translateY(0) scale(0.97);
+      box-shadow: none;
+      transition-duration: 0.08s;
+    }
+
+    @keyframes shine {
+      to { left: 125%; }
+    }
+
+    /* Gentle glow on the primary button to draw attention */
+    .btn-primary {
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    .btn-primary:hover {
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--primary-soft); }
+      50% { box-shadow: 0 0 0 6px var(--primary-soft); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      button,
+      .btn-primary,
+      button:hover::after {
+        animation: none;
+        transition: none;
+      }
+    }
+
+    button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: var(--secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--secondary-hover);
+    }
+
     #message {
-      margin-top: 16px;
-      font-weight: bold;
+      margin: 24px 0 0;
+      font-weight: 600;
+    }
+
+    #message:not(:empty) {
+      padding: 12px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>QA Training App</h1>
-  <p>Local demo for QA testing practice.</p>
+  <div class="container">
+    <header>
+      <span class="badge">Demo</span>
+      <h1>QA Training App</h1>
+      <p>Local demo for QA testing practice.</p>
+    </header>
 
-  <h2>Login Form</h2>
-  <form id="loginForm">
-    <label for="email">Email</label>
-    <input id="email" type="email" placeholder="Enter email">
+    <main class="grid">
+      <section class="card">
+        <h2>Login Form</h2>
+        <p class="card-desc">Sign in with your email and password.</p>
+        <form id="loginForm">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="Enter email">
 
-    <label for="password">Password</label>
-    <input id="password" type="password" placeholder="Enter password">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Enter password">
 
-    <button type="submit">Login</button>
-  </form>
+          <button class="btn-primary" type="submit">Login</button>
+        </form>
+      </section>
 
-  <h2>Submit Form</h2>
-  <form id="submitForm">
-    <label for="fullName">Full name</label>
-    <input id="fullName" type="text" placeholder="Enter full name">
+      <section class="card">
+        <h2>Submit Form</h2>
+        <p class="card-desc">Enter your full name and submit.</p>
+        <form id="submitForm">
+          <label for="fullName">Full name</label>
+          <input id="fullName" type="text" placeholder="Enter full name">
 
-    <button id="submitButton" type="button">Submit</button>
-  </form>
+          <button class="btn-secondary" id="submitButton" type="button">Submit</button>
+        </form>
+      </section>
+    </main>
 
-  <p id="message" role="status" aria-live="polite"></p>
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <footer>QA Training App &middot; For testing practice only</footer>
+  </div>
 
   <script>
     const message = document.getElementById("message");
