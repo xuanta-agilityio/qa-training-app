@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Training App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    input {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 16px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 18px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    #message {
+      margin-top: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>QA Training App</h1>
+  <p>Local demo for QA testing practice.</p>
+
+  <h2>Login Form</h2>
+  <form id="loginForm">
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="Enter email">
+
+    <label for="password">Password</label>
+    <input id="password" type="password" placeholder="Enter password">
+
+    <button type="submit">Login</button>
+  </form>
+
+  <h2>Submit Form</h2>
+  <form id="submitForm">
+    <label for="fullName">Full name</label>
+    <input id="fullName" type="text" placeholder="Enter full name">
+
+    <button id="submitButton" type="button">Submit</button>
+  </form>
+
+  <p id="message" role="status" aria-live="polite"></p>
+
+  <script>
+    const message = document.getElementById("message");
+
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        message.textContent = "Please enter email and password.";
+      } else {
+        message.textContent = "Demo only: login is not connected to a server.";
+      }
+    });
+
+    document.getElementById("submitButton").addEventListener("click", function() {
+      // Intentional bug for QA practice: clicking Submit does nothing.
+    });
+  </script>
+</body>
+</html>
