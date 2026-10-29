@@ -1,0 +1,14 @@
+{
+  "name": "qa-training-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A sample web application for QA training, bug reproduction, and testing practice.",
+  "scripts": {
+    "serve": "http-server . -p 4173 -c-1 --silent",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "http-server": "^14.1.1"
+  }
+}
